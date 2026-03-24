@@ -1,5 +1,5 @@
 const MAX_TEXT_LENGTH = 25;
-const FONT_URL = '/assets/fonts/SourceSans3-wght.ttf';
+const FONT_URL = new URL('../assets/fonts/SourceSans3-wght.ttf', import.meta.url).href;
 const P5_CDN_URL = 'https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js';
 
 const state = {
