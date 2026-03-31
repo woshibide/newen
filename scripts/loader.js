@@ -10,6 +10,8 @@ function createAppState() {
 	return {
 		activeCanvasId: null,
 		controlsExpanded: false,
+		isSingleCanvasPage: false,
+		interfaceHidden: false,
 		scriptsById: new Map(),
 	};
 }
@@ -145,6 +147,27 @@ function toggleControlsPanel(appState) {
 	toggleButton.setAttribute('aria-expanded', String(appState.controlsExpanded));
 }
 
+function setSinglePageInterfaceHidden(appState, isHidden) {
+	if (!appState.isSingleCanvasPage) {
+		return;
+	}
+
+	document.body.classList.toggle('interface-hidden-by-hotkey', isHidden);
+
+	const controlsRoot = document.getElementById('controls');
+	if (controlsRoot) {
+		controlsRoot.classList.toggle('is-hidden-by-hotkey', isHidden);
+	}
+
+	const backLink = document.querySelector('.back-link');
+	if (backLink instanceof HTMLElement) {
+		backLink.classList.toggle('is-hidden-by-hotkey', isHidden);
+		backLink.setAttribute('aria-hidden', String(isHidden));
+	}
+
+	appState.interfaceHidden = isHidden;
+}
+
 function registerScripts(appState) {
 	scriptRegistry.forEach((script) => {
 		if (!script?.id) {
@@ -188,6 +211,35 @@ function bindControlsEvents(appState) {
 			toggleControlsPanel(appState);
 		}
 	});
+
+	window.addEventListener('keydown', (event) => {
+		if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+			return;
+		}
+
+		if (event.key.toLowerCase() !== 'h') {
+			return;
+		}
+
+		const target = event.target;
+		if (
+			target instanceof HTMLInputElement
+			|| target instanceof HTMLTextAreaElement
+			|| target instanceof HTMLSelectElement
+			|| (target instanceof HTMLElement && target.isContentEditable)
+		) {
+			return;
+		}
+
+		event.preventDefault();
+
+		if (appState.isSingleCanvasPage) {
+			setSinglePageInterfaceHidden(appState, !appState.interfaceHidden);
+			return;
+		}
+
+		toggleControlsPanel(appState);
+	});
 }
 
 function bootstrap({ initialCanvasId = null } = {}) {
@@ -197,9 +249,11 @@ function bootstrap({ initialCanvasId = null } = {}) {
 	}
 
 	const appState = createAppState();
+	appState.isSingleCanvasPage = Boolean(initialCanvasId);
 	createControlsShell(controlsRoot);
 	registerScripts(appState);
 	bindControlsEvents(appState);
+	setSinglePageInterfaceHidden(appState, false);
 
 	if (initialCanvasId && appState.scriptsById.has(initialCanvasId)) {
 		setActiveCanvas(appState, initialCanvasId);

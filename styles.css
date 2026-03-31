@@ -136,6 +136,16 @@ canvas {
     margin-top: 0;
 }
 
+#controls.is-hidden-by-hotkey {
+    opacity: 0;
+    pointer-events: none;
+    min-height: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    outline: none;
+}
+
 .controls-shell {
     padding-inline: 1rem;
     display: flex;
@@ -263,4 +273,25 @@ canvas {
     left: 1rem;
     top: 1rem;
     z-index: 6;
+}
+
+.single-page .back-link {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 160ms ease;
+}
+
+.single-page .back-link.is-hidden-by-hotkey {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.single-page.interface-hidden-by-hotkey,
+.single-page.interface-hidden-by-hotkey * {
+    cursor: none !important;
+}
+
+.single-page.interface-hidden-by-hotkey .back-link {
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
