@@ -1,0 +1,11 @@
+{
+  "name": "swarm-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node tooling/site-tool.mjs dev --port 4173",
+    "build:local": "node tooling/site-tool.mjs build-local",
+    "build:github": "node tooling/site-tool.mjs build-github"
+  }
+}
