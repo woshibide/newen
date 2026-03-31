@@ -726,6 +726,9 @@ function drawFlock(p) {
 
 	p.fill(255, 255, 255);
 	p.textAlign(p.CENTER, p.CENTER);
+	if (runtime.font) {
+		p.textFont(runtime.font);
+	}
 	p.textSize(state.glyphSize);
 
 	for (let index = 0; index < runtime.flock.length; index += 1) {
